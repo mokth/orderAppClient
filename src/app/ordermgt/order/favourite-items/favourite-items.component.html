@@ -1,0 +1,382 @@
+
+<div class="panel panel-primary bg-light" *ngIf="isSmallScreen">
+  <div class="panel-heading text-center">
+      <small class="panel-title">{{"orderitem.favourite" | translate }}</small>
+  </div>
+</div>
+
+<div class="panel panel-primary bg-light" *ngIf="!isSmallScreen">
+    <div class="panel-heading text-center">
+        <h4 class="panel-title">{{"orderitem.favourite" | translate }}</h4>
+    </div>
+  </div>
+
+ <!--samll screen -->
+  <div *ngIf="isSmallScreen">
+    <div class="container">
+        <div class="row">              
+          <form [formGroup]="searchForm" class="form-inline">
+            <div class="btn-toolbar " role="toolbar" aria-label="Toolbar with button groups">
+              <div class="btn-group ml-1" role="group" aria-label="First group">
+                <input type="text" class="form-control" formControlName="searchText" id="searchtext" placeholder='{{"orderitem.search" | translate }}'>
+                <dx-select-box [items]="categories" displayExpr="description" valueExpr="code" id="category" placeholder='{{"orderitem.category" | translate }}'
+                              formControlName="category" 
+                              [showClearButton]="true">
+                </dx-select-box>
+                <button type="button" (click)="SearchItem()" class="btn  btn-outline-info">
+                        <fa-icon [icon]="faSearch">                
+                        </fa-icon> {{'orderitem.search' | translate }}
+                </button>
+                <button type="button" width="180" (click)="ShowShoppiChart()" 
+                        title="{{'orderitem.showchart' | translate }}"
+                        class="btn btn-outline-info" title="{{'orderitem.showchart' | translate }}">
+                        <fa-icon [icon]="faShoppingBasket">                
+                        </fa-icon> <span class="counter">{{chartitems.length}}</span>
+                </button>
+              </div>
+
+            </div>
+
+          </form>
+          <hr>
+        </div>
+        <div class="row scrollsmall"  *ngIf="!isShowChart">
+              <dx-scroll-view 
+                    [height]="getHeight()" 
+                    [width]="getWidth()" 
+                    [elementAttr]="{ class: 'scrollsmall' }"
+                    direction="both">
+                <div id="content">  
+                  <form [formGroup]="orderForm">
+                    <div formArrayName="items" *ngFor="let item of formData.controls; let i = index;">
+                      <div [formGroupName]="i">    
+                        <div class="row">
+                          <div class="col">
+                            <img src="{{item.get('imageUrl').value}}" width="100%" height="100" />
+                            <div class="row">
+                              <div class="col">
+                                <small>{{item.get('itemName').value}}</small>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <small>{{item.get('itemNameCN').value}}</small>
+                              </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <input type="number" class="btn-block" formControlName="qty1" placeholder="{{'orderitem.qty' | translate }}">
+                                </div>
+                            </div>
+          
+                          </div>
+                          <div class="col">
+                            <img src="{{item.get('imageUrlprc').value}}" width="100%" height="100" />
+                            <div class="row">
+                              <div class="col">
+                                <small>{{item.get('itemNameprc').value}}</small>
+              
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col">
+                                <small>{{item.get('itemNameCNprc').value}}</small>
+                              </div>
+                            </div>
+                            <div class="row" *ngIf="!IsValidItem(item)">
+                                <div class="col">
+                                <input type="number"  class="btn-block" formControlName="qty2" placeholder="{{'orderitem.qty' | translate }}">
+                                </div>  
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                              <div class="col">
+                                <button type="button" (click)="Add2Chart(item)" class="btn btn-info btn-block">
+                                  <fa-icon [icon]="faAdd"></fa-icon> {{'orderitem.addfavchart' | translate }}
+                                </button>
+                              </div>
+                        </div>
+                        <hr/>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </dx-scroll-view>
+        </div>
+      
+        <div class="row" *ngIf="isShowChart">
+          <div class="col">
+            <dx-data-grid id="gridContainer" [dataSource]="chartitems" (onToolbarPreparing)="onToolbarPreparing($event)">
+              <dxo-paging [pageSize]="5"></dxo-paging>
+              <dxo-editing mode="batch" [allowDeleting]="false" [allowUpdating]="true">
+              </dxo-editing>
+              <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+              </dxo-pager>
+              <dxi-column cellTemplate="actionCellTemplate" width="40"></dxi-column>
+              <dxi-column cellTemplate="rowNumber" width="40" caption="{{'orderitem.count' | translate }}"></dxi-column>
+              <dxi-column dataField="imageUrl" [allowEditing]="false" caption="{{'orderitem.name' | translate }}" cellTemplate="cellTemplate"></dxi-column>
+              
+              <dxi-column dataField="qty" cellTemplate="qtyTemplate" width="90" caption="{{'orderitem.qty' | translate }}"></dxi-column>
+              <div *dxTemplate="let data of 'cellTemplate'">
+                  <div class="row">
+                      <div class="col text-center">
+                        <img [src]="data.value" width="70" height="70" />
+                      </div>                
+                  </div>
+                <div class="row">
+                  <div class="col">
+                      {{data.data.itemName}}
+                  </div>                
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {{data.data.itemNameCN}}
+                    </div>    
+                </div>
+              </div>
+              <div *dxTemplate="let row of 'qtyTemplate'">
+                  <div class="row">
+                      <div class="col text-right">
+                          {{row.data.qty}}
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col text-right">
+                          {{row.data.uom}}
+                      </div>
+                  </div>           
+                
+              </div>
+              <div *dxTemplate="let data of 'rowNumber'">
+                <div style="text-align: right;">{{getRowNumber(data)}}.</div>
+              </div>
+              <div *dxTemplate="let d of 'actionCellTemplate'">
+                <div class="row">
+                  <div class="col">
+                    <button class="btn btn-sm btn-outline-danger text-center"
+                      (click)="onDeleteItem(d)" >
+                      <fa-icon [icon]="faDelete"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </dx-data-grid>
+            
+            <div class="row">
+              <div class="col-6">
+                <button data-toggle="tooltip" data-placement="top" 
+                  (click)="SubmitOrder()" 
+                  [disabled]="chartitems.length==0" 
+                  class="btn btn-sm btn-outline-info btn-block">
+                  <fa-icon [icon]="faSave"></fa-icon> {{'item.save' | translate }}
+                </button>
+              </div>
+              <div class="col-6">
+                  <button class="btn btn-sm btn-outline-danger text-center btn-block" 
+                  mwlConfirmationPopover 
+                  [appendToBody]="true" 
+                  [confirmText] ="popoverYes"
+                  [cancelText] ="popoverNo"
+                  [popoverTitle]="popoverTitle"
+                  [popoverMessage]="popoverMessage" 
+                  placement="top" 
+                  [isOpen]="false" 
+                  (confirm)="CancelAndback()" 
+                  (cancel)="cancelClicked = true">
+                  <fa-icon [icon]="faCaretLeft"></fa-icon> {{'orderitem.cancel' | translate }}
+                </button>
+              </div>
+            </div>
+            <div class="row rowbreak">
+                <div class="col">
+                   <button data-toggle="tooltip" data-placement="top" 
+                   (click)="BacktoOrderList()" 
+                   class="btn btn-sm btn-outline-info btn-block">
+                   <fa-icon [icon]="faShoppingCart"></fa-icon> {{'orderitem.backtoOrder' | translate }}
+                 </button>
+                </div>
+             </div>
+            <br>
+            <br>
+          </div>
+        </div>
+    </div>
+  </div>  
+
+  
+  
+  <!--big screen -->
+<div class="row rowMain"  *ngIf="!isSmallScreen">
+  <div class="col-md-8 ">
+     <div class="row">
+         <form [formGroup]="searchForm" class="form-inline">
+             <div class="form-group mx-sm-3 mb-1">
+               <label for="searchtext" class="sr-only">{{'orderitem.search' | translate }}</label>
+               <input type="text" class="form-control" formControlName="searchText" id="searchtext" placeholder='{{"orderitem.search" | translate }}'>
+             </div>
+             <div class="form-group mx-sm-3 mb-1">
+                 <label for="category" class="sr-only">Search</label>
+                 <dx-select-box [items]="categories" 
+                               displayExpr="description"
+                               valueExpr="code"
+                                id="category"
+                                placeholder='{{"orderitem.category" | translate }}' formControlName="category" [showClearButton]="true"></dx-select-box>
+               </div>
+             <button (click)="SearchItem()" class="btn btn-outline-info mb-2">
+                <fa-icon [icon]="faSearch"></fa-icon> {{'orderitem.search' | translate }}</button>
+           </form>
+     </div>
+     <div class="row">
+         <dx-scroll-view [height]="550" [width]="800" direction="both">
+             <div id="content">
+               <form [formGroup]="orderForm">
+                 <div formArrayName="items" *ngFor="let item of formData.controls; let i = index;">
+                     <div class="row rowdiv" [formGroupName]="i" >
+                           <div class="row">
+                               <div class="col-4">
+                                 <img src="{{item.get('imageUrl').value}}" width="100%" height="150"  />
+                                 <div class="row">
+                                    <div class="col">
+                                        <small>{{item.get('itemName').value}}</small>
+                                    </div>                       
+                                  </div>
+                                  <div class="row">
+                                    <div class="col">
+                                        <small>{{item.get('itemNameCN').value}}</small>
+                                    </div>                       
+                                  </div>
+                               </div>
+                               <div class="col-4">
+                                   <img  src="{{item.get('imageUrlprc').value}}" width="100%" height="150"  />
+                                   <div class="row">
+                                      <div class="col">
+                                          <small>{{item.get('itemNameprc').value}}</small>
+                                      </div>                       
+                                    </div>
+                                    <div class="row">
+                                      <div class="col">
+                                          <small>{{item.get('itemNameCNprc').value}}</small>
+                                      </div>                       
+                                    </div>
+                                 </div>
+                               <div class="col-4">
+                                   <div class="row">
+                                     <div class="col-6">
+                                       <small>{{'orderitem.raw' | translate }}</small>
+                                   </div>
+                                   <div class="col-6">
+                                     <small>{{'orderitem.process' | translate }}</small>
+                                   </div>
+                                   </div>
+                                   <div class="row rowdiv">
+                                       <div class="col-6">
+                                           <input type="number" class="btn-block" formControlName="qty1" placeholder="{{'orderitem.qty' | translate }}">
+                                       </div>
+                                       <div class="col-6">
+                                           <input type="number" [readonly]="IsValidItem(item)" class="btn-block" formControlName="qty2" placeholder="{{'orderitem.qty' | translate }}">
+                                       </div>
+                                   </div>
+                                   <div class="row rowdiv">
+                                      <div class="col-6 text-center">
+                                        <small class="text-danger">({{item.get('itemUom').value}})</small>
+                                      </div>
+                                      <div class="col-6 text-center">
+                                        <small class="text-danger">({{item.get('itemUomprc').value}})</small>
+                                      </div>
+                                    </div>
+                                   <div class="row">
+                                         <div class="col">
+                                             <button type="button" (click)="Add2Chart(item)" 
+                                              class="btn btn-info btn-block" >
+                                              <fa-icon [icon]="faAdd"></fa-icon> {{'orderitem.addfavchart' | translate }}
+                                             </button>
+                                         </div>
+                                   </div>
+                               </div>
+                           </div>
+                         <hr/>
+                   </div>
+                 </div>
+               </form>
+             </div>
+         </dx-scroll-view>
+     </div>
+  </div>
+  <div class="col-md-4">
+       
+       <dx-data-grid id="gridContainer" [dataSource]="chartitems"
+       (onToolbarPreparing)="onToolbarPreparing($event)">
+         <dxo-paging [pageSize]="5"></dxo-paging>
+         <dxo-editing mode="batch" [allowDeleting]="false" [allowUpdating]="true">
+         </dxo-editing>
+         <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+         </dxo-pager>
+         <dxi-column cellTemplate="actionCellTemplate" width="40"></dxi-column>
+         <dxi-column cellTemplate="rowNumber" width="40" caption="{{'orderitem.count' | translate }}"></dxi-column>
+         <dxi-column dataField="imageUrl" [allowEditing]="false" caption="" width="80" cellTemplate="cellTemplate"></dxi-column>
+         <dxi-column dataField="itemNameCN" [allowEditing]="false" caption="{{'orderitem.name' | translate }}" cellTemplate="nameTemplate"></dxi-column>
+         <dxi-column dataField="qty" width="80" caption="{{'orderitem.qty' | translate }}"></dxi-column>
+         <div *dxTemplate="let data of 'cellTemplate'">
+           <img [src]="data.value" width="70" height="70" />
+         </div>
+         <div *dxTemplate="let row of 'nameTemplate'">
+          <div class="row">
+            <div class="col">
+              {{row.data.itemName}}
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              {{row.data.itemNameCN}}
+            </div>
+          </div>
+        </div>
+         <div *dxTemplate="let data of 'rowNumber'">
+          <div style="text-align: right;">{{getRowNumber(data)}}.</div>
+         </div>
+         <div *dxTemplate="let d of 'actionCellTemplate'">
+           <div class="row">
+             <div class="col">
+               <button class="btn btn-sm btn-outline-danger text-center btn-block" 
+                   (click)="onDeleteItem(d)" >
+                 <fa-icon [icon]="faDelete"></fa-icon>
+               </button>
+             </div>
+           </div>
+         </div>
+       </dx-data-grid>
+    
+     <div class="row">
+       <div class="col-4">
+           <button data-toggle="tooltip" data-placement="top" 
+                   (click)="SubmitOrder()" [disabled]="chartitems.length==0"
+                   class="btn btn-sm btn-outline-info btn-block">
+                       <fa-icon [icon]="faSave"></fa-icon> {{'item.save' | translate }}
+                     </button>
+       </div>
+       <div class="col-4">
+           <!-- <button  data-toggle="tooltip" data-placement="top" 
+                      class="btn btn-sm btn-outline-info btn-block"
+                      (click)="CancelAndback()">
+                       <fa-icon [icon]="faEdit"></fa-icon> {{'orderitem.cancel' | translate }}
+                     </button> -->
+                     <button class="btn btn-sm btn-outline-danger text-center btn-block" 
+                     mwlConfirmationPopover 
+                     [appendToBody]="true" 
+                     [confirmText] ="popoverYes"
+                     [cancelText] ="popoverNo"
+                     [popoverTitle]="popoverTitle"
+                     [popoverMessage]="popoverMessage" 
+                     placement="top" 
+                     [isOpen]="false" 
+                     (confirm)="CancelAndback()" 
+                     (cancel)="cancelClicked = true">
+                     <fa-icon [icon]="faCaretLeft"></fa-icon> {{'orderitem.cancel' | translate }}
+                    </button>
+       </div>
+     </div> 
+  </div>
+</div>   
+   
+

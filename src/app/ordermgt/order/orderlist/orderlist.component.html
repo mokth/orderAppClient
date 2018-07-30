@@ -1,0 +1,82 @@
+  <!--small screen-->
+  <div class="row rowMain" *ngIf="isSmallScreen">
+      <div class="col">
+          <dx-data-grid id="gridContainer"
+             (onToolbarPreparing)="onToolbarPreparing($event)" 
+              [dataSource]="orders">
+              <dxo-paging [pageSize]="10"></dxo-paging>
+              <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+              </dxo-pager>
+              <dxo-filter-row 
+              [visible]="true" 
+              ></dxo-filter-row>
+              <dxo-filter-row [visible]="true"></dxo-filter-row>
+              <dxo-state-storing [enabled]="true" type="localStorage" storageKey="storage"></dxo-state-storing>
+             <dxo-search-panel 
+              [visible]="true" 
+              
+              placeholder="{{'orderitem.search' | translate }}..."></dxo-search-panel>
+              <dxi-column cellTemplate="actionCellTemplate" width="50"></dxi-column>
+              <dxi-column dataField="orderDate" cssClass="smallcell" dataType="date" format="dd-MM-yyyy" caption="{{'orderitem.date' | translate }}" ></dxi-column>
+              <dxi-column dataField="orderNo" cssClass="smallcell" caption="{{'orderitem.orderno' | translate }}" ></dxi-column>
+              <dxi-column dataField="orderStatus" cssClass="smallcell" width="60" caption="{{'orderitem.status' | translate }}" ></dxi-column>
+            
+              
+              <div *dxTemplate="let d of 'actionCellTemplate'">
+                <div class="row">
+                  <div class="col">
+                    <button class="btn btn-sm btn-outline-info text-center btn-block"
+                      (click)="OnViewItem(d)" >
+                      <fa-icon [icon]="faEyeSlash"></fa-icon>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </dx-data-grid>
+      </div>
+    </div>
+
+ <div class="container"> 
+    
+
+  <!--Big screen-->
+  <div class="row rowMain" *ngIf="!isSmallScreen">
+    <div class="col">
+        <dx-data-grid id="gridContainer"
+           (onToolbarPreparing)="onToolbarPreparing($event)" 
+            [dataSource]="orders">
+            <dxo-paging [pageSize]="10"></dxo-paging>
+            <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+            </dxo-pager>
+            <dxo-filter-row 
+            [visible]="true" 
+            ></dxo-filter-row>
+            <dxo-filter-row [visible]="true"></dxo-filter-row>
+            <dxo-state-storing [enabled]="true" type="localStorage" storageKey="storage"></dxo-state-storing>
+           <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="{{'orderitem.search' | translate }}..."></dxo-search-panel>
+            <dxi-column cellTemplate="actionCellTemplate" width="50"></dxi-column>
+            <dxi-column dataField="orderDate" dataType="date" format="dd-MM-yyyy" caption="{{'orderitem.date' | translate }}" ></dxi-column>
+            <dxi-column dataField="orderNo" caption="{{'orderitem.orderno' | translate }}" ></dxi-column>
+            <dxi-column dataField="orderStatus" caption="{{'orderitem.status' | translate }}" ></dxi-column>
+            <dxi-column dataField="customerName" caption="{{'orderitem.customer' | translate }}" ></dxi-column>
+            <dxi-column dataField="remark" caption="{{'orderitem.remark' | translate }}" ></dxi-column>
+            <dxi-column dataField="createDate" dataType="date" format="dd-MM-yyyy" caption="{{'orderitem.created' | translate }}" ></dxi-column>
+            <dxi-column dataField="updateDate" dataType="date" format="dd-MM-yyyy" caption="{{'orderitem.updated' | translate }}" ></dxi-column> 
+            
+            <div *dxTemplate="let d of 'actionCellTemplate'">
+              <div class="row">
+                <div class="col">
+                  <button class="btn btn-sm btn-outline-info text-center btn-block"
+                    (click)="OnViewItem(d)" >
+                    <fa-icon [icon]="faEyeSlash"></fa-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </dx-data-grid>
+    </div>
+  </div>
+</div>

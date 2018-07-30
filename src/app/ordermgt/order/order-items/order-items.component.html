@@ -1,0 +1,103 @@
+<!--samll screen-->
+<div class="div" *ngIf="isSmallScreen">
+    <div class="row rowMain">
+        <div class="col">
+            <dx-data-grid id="gridContainer" [dataSource]="items"
+            (onToolbarPreparing)="onToolbarPreparing($event)" >
+                <dxo-paging [pageSize]="10"></dxo-paging>
+                <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                </dxo-pager>
+                <dxo-search-panel 
+                [visible]="true"               
+                placeholder="{{'orderitem.search' | translate }}..."></dxo-search-panel>
+                <dxi-column cellTemplate="rowNumber" width="40" caption="{{'orderitem.count' | translate }}"></dxi-column>
+                <dxi-column dataField="imageUrl" caption=""  cellTemplate="cellTemplate"  ></dxi-column>
+                <!-- <dxi-column dataField="itemCode" caption="{{'orderitem.search' | translate }}" ></dxi-column>
+                <dxi-column dataField="itemNameCN" caption="{{'orderitem.name' | translate }}" ></dxi-column> -->
+               
+                <dxi-column dataField="quantity"  width="50" caption="{{'orderitem.qty' | translate }}" ></dxi-column>
+                <dxi-column dataField="itemUom"  width="50" caption="{{'orderitem.itemuom' | translate }}" ></dxi-column>
+                <div *dxTemplate="let data of 'cellTemplate'">
+                  <div class="row">
+                    <div class="col text-center">
+                      <img [src]="getImage(data.value)" width="70" height="70" />
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      {{data.data.itemName}}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col">
+                      {{data.data.itemNameCN}}
+                    </div>
+                  </div>
+
+                </div>
+                <div *dxTemplate="let data of 'rowNumber'">
+                    <div style="text-align: right;">{{getRowNumber(data)}}.</div>
+                  </div>
+              
+              </dx-data-grid>
+        </div>
+      </div>
+      <hr>
+      <div class="row">
+          <div class="col">
+              <button (click)="back()"
+              class="btn btn-outline-info btn-block">
+              <fa-icon [icon]="faCancel"></fa-icon><span> {{'orderitem.cancel' | translate }}</span>
+            </button>
+          </div>
+      </div>
+</div>
+
+<!--Big screen-->
+<div class="container"  *ngIf="!isSmallScreen"> 
+  <div class="row rowMain">
+    <div class="col">
+        <dx-data-grid id="gridContainer" [dataSource]="items"
+        (onToolbarPreparing)="onToolbarPreparing($event)" >
+            <dxo-paging [pageSize]="10"></dxo-paging>
+            <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+            </dxo-pager>
+            <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="{{'orderitem.search' | translate }}..."></dxo-search-panel>
+
+            <dxi-column dataField="imageUrl" caption="" width="80" cellTemplate="cellTemplate"  ></dxi-column>
+            <dxi-column dataField="itemCode" caption="{{'orderitem.search' | translate }}" ></dxi-column>
+            <dxi-column dataField="itemNameCN" caption="{{'orderitem.name' | translate }}" cellTemplate="nameTemplate" ></dxi-column>
+            <dxi-column dataField="itemCategory" caption="{{'orderitem.category' | translate }}" ></dxi-column>
+            <dxi-column dataField="quantity" caption="{{'orderitem.qty' | translate }}" ></dxi-column>
+            <dxi-column dataField="itemUom" caption="{{'orderitem.itemuom' | translate }}" ></dxi-column>
+            <div *dxTemplate="let data of 'cellTemplate'">
+              <img [src]="getImage(data.value)" width="70" height="70" />
+            </div>
+            <div *dxTemplate="let row of 'nameTemplate'">
+              <div class="row">
+                <div class="col">
+                  {{row.data.itemName}}
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  {{row.data.itemNameCN}}
+                </div>
+              </div>
+            </div>
+          
+          </dx-data-grid>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-2">
+          <button (click)="back()"
+          class="btn btn-outline-info btn-block">
+          <fa-icon [icon]="faCancel"></fa-icon><span> {{'orderitem.cancel' | translate }}</span>
+        </button>
+      </div>
+  </div>
+</div>

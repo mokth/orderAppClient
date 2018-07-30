@@ -1,0 +1,23 @@
+
+#main-header {
+    background-color: #BAE0F3;
+    padding: 4px;
+}
+#main-header .navbar {
+    background-color: #BAE0F3;
+    border-style: dotted;
+    border-color: white;
+    border-width: 1px;
+    padding-top: 0 !important;
+    padding-bottom: 0!important;
+    margin-top: 0 !important;
+    margin-bottom: 0!important;
+}
+.navbar-toggler-icon{
+    color:darkblue !important;
+}
+
+.navbar-brand{
+    margin: 0 !important;
+    padding: 0 !important;
+}

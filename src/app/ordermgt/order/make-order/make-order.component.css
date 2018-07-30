@@ -1,0 +1,35 @@
+.rowdiv {
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+}
+.list {
+    background-color: bisque;
+}
+.rowMain {
+    margin-top: 15px;
+   
+}
+.rowbreak {
+    margin-top: 15px;
+   
+}
+.coldiv{
+    margin-left: 1px;
+    padding-left: 1px;
+}
+.scrollsmall{
+    padding-top: 10px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+.btn-block {
+    display: block;
+    min-width: 95%;
+}  
+.orderTitle{
+    padding-top:5px;
+    padding-bottom: 5px;
+}
+.counter{
+    color:red;
+}

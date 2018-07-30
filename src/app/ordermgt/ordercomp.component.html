@@ -1,0 +1,19 @@
+<p>order management</p>
+<button (click)="OnClick()">Create a Pickup Task</button>
+<button (click)="OnClick2()">Create Delivery</button>
+<button (click)="OnClick3()">Get Task Detail</button>
+<input type="file" (change)="fileChangeEvent($event)" />
+
+<image-cropper
+    [imageChangedEvent]="imageChangedEvent"
+    [maintainAspectRatio]="true"
+    [aspectRatio]="4 / 3"
+    [resizeToWidth]="128"
+    format="png"
+    (imageCropped)="imageCropped($event)"
+    (imageLoaded)="imageLoaded()"
+    (loadImageFailed)="loadImageFailed()"
+></image-cropper>
+
+<img [src]="croppedImage" />
+<router-outlet></router-outlet>
